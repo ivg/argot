@@ -1,0 +1,7 @@
+description="enhanced html generator for ocamldoc"
+requires=""
+version="1.0-alpha"
+
+archive(byte)="argot.cmo"
+archive(native)="argot.cmx"
+archive(java)="argot.cmj"

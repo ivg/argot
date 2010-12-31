@@ -1,0 +1,9 @@
+- stroked, underlined, and highlighted styles
+- image data inclusion
+- full table support (caption, headers, rows, and data)
+- token substitution
+- @typevar tag to document type variable
+- @unimplemented, @todo, @todoc, @docme, @fixme, @tofix tags for remaining work
+- @threadsafe, @threadunsafe tags for thread compatibility
+- @stateful tag for state-based functions
+- @attention, @bug, @error, @info, @new, @note, @remark, @warning tags
