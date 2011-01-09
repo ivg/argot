@@ -1,6 +1,6 @@
 #
 # This file is part of Argot.
-# Copyright (C) 2010 Xavier Clerc.
+# Copyright (C) 2010-2011 Xavier Clerc.
 #
 # Argot is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@ default: FORCE
 	@echo '  all              runs all tests'
 	@echo '  one NAME=dir     runs the test whose name is passed'
 	@echo '  clean            deletes log and result files'
+	@echo '  log              print log for last execution'
 	@echo '  new NAME=dir     creates a new test directory'
 
 all: clean
@@ -49,6 +50,11 @@ one: FORCE
 clean: FORCE
 	@rm -f _log
 	@rm -fr */result */result.html
+
+log: FORCE
+	@cat _log
+	@echo ''
+	@echo "`grep '^\*\*\*' _log | wc -l` error(s) in `grep '^Running tests for' _log | wc -l` test(s)"
 
 new: FORCE
 	@if [ -z $(NAME) ]; then echo "*** value for 'NAME' is missing"; exit 1; fi
