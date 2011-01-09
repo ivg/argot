@@ -22,8 +22,8 @@
 ocamlbuild=`which ocamlbuild || echo '/usr/local/bin/ocamlbuild'`
 bin_path=`dirname $ocamlbuild`
 ocaml_prefix=`dirname $bin_path`
-ocamlfind=`which ocamlfind || echo ''` 
-sed=`which gsed || which sed`
+ocamlfind=`which ocamlfind 2> /dev/null || echo ''`
+native_dynlink='TRUE'
 
 # command-line analysis
 while [ $# -gt 0 ]
@@ -33,6 +33,8 @@ do
             ocaml_prefix="$2"; shift;;
         -ocamlfind)
             ocamlfind="$2"; shift;;
+        -no-native-dynlink)
+            native_dynlink='FALSE';;
         *)
             echo "usage: $0 [-ocaml-prefix <path>] [-ocamlfind <path>]";
             exit 1;;
@@ -40,10 +42,18 @@ do
         shift
 done
 
+# make options
+make_quiet=`make -f - <<EOF
+default: gnumake
+	@if [ "$^" != "" ]; then echo '--no-print-directory'; fi
+gnumake:
+EOF`
+
 # file creation
 echo "# timestamp: `date`" > Makefile.config
 echo "PATH_OCAML_PREFIX=$ocaml_prefix" >> Makefile.config
 echo "PATH_OCAMLFIND=$ocamlfind" >> Makefile.config
+echo "NATIVE_DYNLINK=$native_dynlink" >> Makefile.config
+echo "MAKE_QUIET=$make_quiet" >> Makefile.config
 echo "" >> Makefile.config
-echo "SED=$sed" >> Makefile.config
 echo 'Makefile.config successfully created'

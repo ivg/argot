@@ -57,32 +57,30 @@ doc: FORCE
 	cp $(PATH_BUILD)/$(PROJECT_NAME).docdir/*.html $(PATH_BUILD)/$(PROJECT_NAME).docdir/*.css $(PATH_OCAMLDOC)
 
 tests: FORCE
-	test -f $(PATH_TESTS)/Makefile && (cd $(PATH_TESTS) && $(MAKE) all && cd ..) || true
+	test -f $(PATH_TESTS)/Makefile && (cd $(PATH_TESTS) && $(MAKE) $(MAKE_QUIET) all && cd ..) || true
 
 clean: FORCE
 	$(OCAMLBUILD) $(OCAMLBUILD_FLAGS) -clean
-	test -f $(PATH_TESTS)/Makefile && (cd $(PATH_TESTS) && $(MAKE) clean && cd ..) || true
+	test -f $(PATH_TESTS)/Makefile && (cd $(PATH_TESTS) && $(MAKE) $(MAKE_QUIET) clean && cd ..) || true
 	rm -f $(MODULES_ODOCL) $(MODULES_MLPACK) $(PROJECT_NAME).itarget
 
 veryclean: clean
 	rm -f $(PATH_OCAMLDOC)/*.html $(PATH_OCAMLDOC)/*.css
 
 install: all
-ifeq ($(OCAMLFIND),)
-	mkdir -p $(PATH_INSTALL)
-	cp $(PATH_BUILD)/$(PROJECT_NAME).cmo $(PATH_INSTALL)
-	(test -x $(PATH_OCAML_PREFIX)/bin/ocamlopt && cp $(PATH_BUILD)/$(PROJECT_NAME).cmx $(PATH_INSTALL)) || true
-	(test -x $(PATH_OCAML_PREFIX)/bin/ocamljava && cp $(PATH_BUILD)/$(PROJECT_NAME).cmj $(PATH_INSTALL)) || true
-else
-	$(OCAMLFIND) query $(PROJECT_NAME) && $(OCAMLFIND) remove $(PROJECT_NAME) || true
-	$(OCAMLFIND) install $(PROJECT_NAME) META $(PATH_BUILD)/*.cm* $(PATH_BUILD)/*.a $(PATH_BUILD)/*.ja* $(PATH_BUILD)/*.byte $(PATH_BUILD)/*.native
-endif
+	if [ -x "$(OCAMLFIND)" ]; then \
+	  $(OCAMLFIND) query $(PROJECT_NAME) && $(OCAMLFIND) remove $(PROJECT_NAME) || true; \
+	  $(OCAMLFIND) install $(PROJECT_NAME) META $(PATH_BUILD)/*.cmo $(PATH_BUILD)/*.cm?s; \
+	else \
+	  mkdir -p $(PATH_INSTALL); \
+	  for ext in cmo cmxs cmjs; do \
+	    test -f $(PATH_BUILD)/$(PROJECT_NAME).$$ext && cp $(PATH_BUILD)/$(PROJECT_NAME).$$ext $(PATH_INSTALL) || true; \
+	  done \
+	fi
 
 generate: FORCE
-	find $(PATH_SRC) -name '*.mli' | xargs basename | $(SED) -e 's|\.mli$$||' | $(SED) -e 's|^.|\U&|' > $(MODULES_ODOCL)
-	cp $(MODULES_ODOCL) $(MODULES_MLPACK)
 	echo '$(PROJECT_NAME).cmo' > $(PROJECT_NAME).itarget
-	(test -x $(PATH_OCAML_PREFIX)/bin/ocamlopt && echo '$(PROJECT_NAME).cmx' >> $(PROJECT_NAME).itarget) || true
-	(test -x $(PATH_OCAML_PREFIX)/bin/ocamljava && echo '$(PROJECT_NAME).cmj' >> $(PROJECT_NAME).itarget) || true
+	(test -x $(PATH_OCAML_PREFIX)/bin/ocamlopt && test $(NATIVE_DYNLINK) = TRUE && echo '$(PROJECT_NAME).cmxs' >> $(PROJECT_NAME).itarget) || true
+	(test -x $(PATH_OCAML_PREFIX)/bin/ocamljava && echo '$(PROJECT_NAME).cmjs' >> $(PROJECT_NAME).itarget) || true
 
 FORCE:
