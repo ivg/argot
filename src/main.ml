@@ -173,4 +173,8 @@ let () =
      Arg.Tuple [Arg.Set_string var;
                 Arg.String (fun s -> definitions := (!var, s) :: !definitions)]),
      "<name> <value>\n\t\tDefine a variable to be used by the token tag");
+  Args.add_option
+    ("-argot-version",
+     Arg.Unit (fun () -> Printf.printf "Argot %s\n" Version.value; exit 0),
+     "\n\t\tPrint version and exit\n");
   Args.set_doc_generator (Some argot_generator)
