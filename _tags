@@ -23,8 +23,7 @@ true: -traverse
 # Options
 <src/**>: use_ocamldoc
 <src/**>: for-pack(Argot)
-<src/**/*.ml{,i}>: warn_Ae
-<src/**/*.ml{,i}>: warn_error_A
+<src/**/*.ml{,i}>: warnings
 
 # Generation of version file
 "src/main.ml": src_version_ml
