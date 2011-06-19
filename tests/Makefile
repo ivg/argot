@@ -38,14 +38,20 @@ all: clean
 one: FORCE
 	@if [ -z $(NAME) ]; then echo "*** value for 'NAME' is missing"; exit 1; fi
 	@echo "Running tests for '$(NAME)'..."
-	@cd $(NAME) \
-	  && mkdir -p result.html \
-	  && ocamldoc -g $(GENERATOR) `cat args` -d result.html *.mli > result 2>&1 \
-	  && ((diff -r -q reference.html result.html > /dev/null 2> /dev/null) \
-	     || echo "*** invalid $(NAME)/result.html") \
-	  && ((diff -q reference result > /dev/null 2> /dev/null) \
-	     || echo "*** invalid $(NAME)/result") \
-	  && cd ..
+	@if [ -f $(NAME)/Makefile ]; then \
+	  cd $(NAME) \
+	    && $(MAKE) \
+	    && cd ..; \
+	else \
+	  cd $(NAME) \
+	    && mkdir -p result.html \
+	    && ocamldoc -g $(GENERATOR) `cat args` -d result.html *.mli > result 2>&1 \
+	    && ((diff -r -q reference.html result.html > /dev/null 2> /dev/null) \
+	       || echo "*** invalid $(NAME)/result.html") \
+	    && ((diff -q reference result > /dev/null 2> /dev/null) \
+	       || echo "*** invalid $(NAME)/result") \
+	    && cd ..; \
+	fi
 
 clean: FORCE
 	@rm -f _log
