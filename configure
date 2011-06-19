@@ -36,7 +36,7 @@ do
         -no-native-dynlink)
             native_dynlink='FALSE';;
         *)
-            echo "usage: $0 [-ocaml-prefix <path>] [-ocamlfind <path>]";
+            echo "usage: $0 [-ocaml-prefix <path>] [-ocamlfind <path>] [-no-native-dynlink]";
             exit 1;;
         esac
         shift
