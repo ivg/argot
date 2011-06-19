@@ -68,9 +68,9 @@ veryclean: clean
 	rm -f $(PATH_OCAMLDOC)/*.html $(PATH_OCAMLDOC)/*.css
 
 install: all
-	if [ -x "$(OCAMLFIND)" ]; then \
-	  $(OCAMLFIND) query $(PROJECT_NAME) && $(OCAMLFIND) remove $(PROJECT_NAME) || true; \
-	  $(OCAMLFIND) install $(PROJECT_NAME) META $(PATH_BUILD)/*.cmo $(PATH_BUILD)/*.cm?s; \
+	if [ -x "$(PATH_OCAMLFIND)" ]; then \
+	  $(PATH_OCAMLFIND) query $(PROJECT_NAME) && $(PATH_OCAMLFIND) remove $(PROJECT_NAME) || true; \
+	  $(PATH_OCAMLFIND) install $(PROJECT_NAME) META $(PATH_BUILD)/*.cmo $(PATH_BUILD)/*.cm?s; \
 	else \
 	  mkdir -p $(PATH_INSTALL); \
 	  for ext in cmo cmxs cmjs; do \
