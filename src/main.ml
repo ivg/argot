@@ -18,6 +18,10 @@
 
 let definitions = ref []
 
+type text_kind =
+  | Text of Odoc_info.text
+  | String of string
+
 class argot_generator = object (self)
 
   inherit Odoc_html.html as super
@@ -51,21 +55,41 @@ class argot_generator = object (self)
         Buffer.add_string buff "\"")
       attrs;
     Buffer.add_string buff ">";
-    Buffer.add_string buff (self#trimmed_string_of_text text);
+    Buffer.add_string buff
+      (match text with
+      | Text t -> self#trimmed_string_of_text t
+      | String s -> s);
     Buffer.add_string buff "</";
     Buffer.add_string buff tag;
     Buffer.add_string buff ">"
 
   method! html_of_custom_text buff start text =
     match start with
-    | "s" -> self#render_tag "strike" [] buff text
-    | "u" -> self#render_tag "u" [] buff text
-    | "h" -> self#render_tag "font" ["style", "background-color: orange"] buff text
-    | "table" -> self#render_tag "table" ["class", "argot"] buff text
-    | "header" -> self#render_tag "th" [] buff text
-    | "row" -> self#render_tag "tr" [] buff text
-    | "data" -> self#render_tag "td" [] buff text
-    | "caption" -> self#render_tag "caption" [] buff text
+    | "s" -> self#render_tag "strike" [] buff (Text text)
+    | "u" -> self#render_tag "u" [] buff (Text text)
+    | "h" -> self#render_tag "font" ["style", "background-color: orange"] buff (Text text)
+    | "table" -> self#render_tag "table" ["class", "argot"] buff (Text text)
+    | "header" -> self#render_tag "th" [] buff (Text text)
+    | "row" -> self#render_tag "tr" [] buff (Text text)
+    | "data" -> self#render_tag "td" [] buff (Text text)
+    | "span" ->
+        let text = self#trimmed_string_of_text text in
+        let idx1 = try String.index text ' ' with Not_found -> max_int in
+        let idx2 = try String.index text '\t' with Not_found -> max_int in
+        let idx = min idx1 idx2 in
+        if idx < max_int then
+          let sz = String.sub text 0 idx in
+          try
+            if int_of_string sz >= 1 then
+              let text = String.sub text idx ((String.length text) - idx) in
+              self#render_tag "td" ["colspan", sz] buff (String text)
+            else
+              Odoc_info.warning "span size should be positive"
+          with Failure _ ->
+            Odoc_info.warning "span size should be an integer"
+        else
+          Odoc_info.warning "span size is missing"
+    | "caption" -> self#render_tag "caption" [] buff (Text text)
     | "token" ->
         let id = self#trimmed_string_of_text text in
         let contents =
