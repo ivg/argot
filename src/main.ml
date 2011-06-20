@@ -177,10 +177,11 @@ class argot_generator = object (self)
 
     self#register_tag_with_prefix "alias" "Alias for ";
     self#register_tag_with_prefix "synonym" "Synonym for ";
+    self#register_tag_with_prefix "abbreviation" "Abbreviation for ";
     self#register_tag_with_prefix "equivalent" "Equivalent to ";
 
     self#register_tag_with_icon "todo" ["unimplemented"];
-    self#register_tag_with_icon "todoc" ["undocumented", "docme"];
+    self#register_tag_with_icon "todoc" ["undocumented"; "docme"];
     self#register_tag_with_icon "tofix" ["fixme"];
 
     self#register_tag_with_icon "stateful" [];
