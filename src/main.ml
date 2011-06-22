@@ -29,6 +29,8 @@ class argot_generator = object (self)
   val mutable last_row_length = None
   val mutable current_row_length = 0
 
+  val mutable next_fold_id = 0
+
   method private string_of_text text =
     let buff = Buffer.create 256 in
     self#html_of_text buff text;
@@ -134,6 +136,27 @@ class argot_generator = object (self)
       Buffer.add_string buff "\" title=\"";
       Buffer.add_string buff basename;
       Buffer.add_string buff "\"/>"
+  | "fold" ->
+      let id = string_of_int next_fold_id in
+      next_fold_id <- succ next_fold_id;
+      let text = Printf.sprintf "%S" (self#trimmed_string_of_text text) in
+      Buffer.add_string buff "<script type=\"text/javascript\">\n";
+      Buffer.add_string buff "<!--\n";
+      Buffer.add_string buff ("  var argot_fold_state_" ^ id ^ " = false;\n");
+      Buffer.add_string buff ("  var argot_fold_text_" ^ id ^ " = " ^ text ^ ";\n");
+      Buffer.add_string buff ("  function argot_fold_" ^ id ^ "() {\n");
+      Buffer.add_string buff ("    if (argot_fold_state_" ^ id ^ ") {\n");
+      Buffer.add_string buff ("      document.getElementById('argot_fold_" ^ id ^ "').innerHTML = \"\";\n");
+      Buffer.add_string buff ("    } else {\n");
+      Buffer.add_string buff ("      document.getElementById('argot_fold_" ^ id ^ "').innerHTML = argot_fold_text_" ^ id ^ ";\n");
+      Buffer.add_string buff ("    };\n");
+      Buffer.add_string buff ("    argot_fold_state_" ^ id ^ " = !argot_fold_state_" ^ id ^";\n");
+      Buffer.add_string buff ("  }\n");
+      Buffer.add_string buff "//-->\n";
+      Buffer.add_string buff "</script>\n";
+      Buffer.add_string buff ("<a href=\"javascript:argot_fold_" ^ id ^ "();\">...</a>\n");
+      Buffer.add_string buff ("<div id=\"argot_fold_" ^ id ^ "\">\n");
+      Buffer.add_string buff "</div>\n"
   | _ -> super#html_of_custom_text buff start text
 
   method private typevar_tag text =
