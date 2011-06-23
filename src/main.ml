@@ -182,6 +182,12 @@ class argot_generator = object (self)
       prefix ^ (self#string_of_text text) ^ "<br>\n" in
     tag_functions <- tag_functions @ [name, impl]
 
+  method private register_tag_with_prefix_and_modifier name prefix modifier =
+    let impl text =
+      let text = self#string_of_text text in
+      prefix ^ (modifier text) ^ "<br>\n" in
+    tag_functions <- tag_functions @ [name, impl]
+
   method private register_tag_with_icon name synonyms =
     let impl text =
       Printf.sprintf "<img class=\"argot_%s\" src=\"data:image/png;base64,%s\" alt=\"%s\" title=\"%s\" align=\"middle\"/>&nbsp;%s<br>\n"
@@ -202,6 +208,28 @@ class argot_generator = object (self)
     self#register_tag_with_prefix "synonym" "Synonym for ";
     self#register_tag_with_prefix "abbreviation" "Abbreviation for ";
     self#register_tag_with_prefix "equivalent" "Equivalent to ";
+
+    self#register_tag_with_prefix "copyright" "<b>Copyright:</b> ";
+    self#register_tag_with_prefix_and_modifier "license" "<b>License:</b> "
+      (fun text ->
+        let enclose addr =
+          Printf.sprintf "<a href=\"%s\" target=\"_blank\">%s</a>" addr text in
+        match String.lowercase text with
+        | "gpl" | "gpl1" | "gplv1" ->
+            enclose "http://www.gnu.org/licenses/old-licenses/gpl-1.0.html"
+        | "gpl2" | "gplv2" ->
+            enclose "http://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
+        | "gpl3" | "gplv3" ->
+            enclose "http://www.gnu.org/licenses/gpl.html"
+        | "lgpl" | "lgplv2" ->
+            enclose "http://www.gnu.org/licenses/old-licenses/lgpl-2.0.html"
+        | "lgpl21" | "lgpl2.1" | "lgpl2_1" | "lgplv21" | "lgplv2.1" | "lgplv2_1" ->
+            enclose "http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html"
+        | "lgpl3" | "lgplv3" ->
+            enclose "http://www.gnu.org/licenses/lgpl.html"
+        | "agpl" ->
+            enclose "http://www.gnu.org/licenses/agpl.html"
+        | _ -> text);
 
     self#register_tag_with_icon "todo" ["unimplemented"];
     self#register_tag_with_icon "todoc" ["undocumented"; "docme"];

@@ -1,0 +1,74 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link rel="Up" href="index.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="A" rel="Chapter" href="A.html"><title>A</title>
+</head>
+<body>
+<div class="navbar">&nbsp;<a href="index.html">Up</a>
+&nbsp;</div>
+<center><h1>Module <a href="type_A.html">A</a></h1></center>
+<br>
+<pre><span class="keyword">module</span> A: <code class="code">sig</code> <a href="A.html">..</a> <code class="code">end</code></pre>Test for tags.<br>
+<b>Copyright:</b> none<br>
+<b>License:</b> <a href="http://www.gnu.org/licenses/lgpl.html" target="_blank">lgplv3</a><br>
+<hr width="100%">
+<pre><span id="VALpoly"><span class="keyword">val</span> poly</span> : <code class="type">'a list -> 'a</code></pre><div class="info">
+some info...<br>
+<code class="code">'a</code>&nbsp;: element<br>
+</div>
+<pre><span id="VALnop"><span class="keyword">val</span> nop</span> : <code class="type">unit -> unit</code></pre><pre><span id="VALdo_nothing_1"><span class="keyword">val</span> do_nothing_1</span> : <code class="type">unit -> unit</code></pre><div class="info">
+Alias for <code class="code">nop</code><br>
+</div>
+<pre><span id="VALdo_nothing_2"><span class="keyword">val</span> do_nothing_2</span> : <code class="type">unit -> unit</code></pre><div class="info">
+Synonym for <code class="code">nop</code><br>
+</div>
+<pre><span id="VALdo_something"><span class="keyword">val</span> do_something</span> : <code class="type">unit -> unit</code></pre><div class="info">
+Equivalent to <code class="code">M.do_something 0</code><br>
+</div>
+<pre><span id="VALf"><span class="keyword">val</span> f</span> : <code class="type">int -> int</code></pre><div class="info">
+some info...<br>
+<img class="argot_todo" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAA1JREFUCNdjYGBgYAAAAAUAAV7zKjoAAAAASUVORK5CYII=" alt="todo" title="todo" align="middle"/>&nbsp;check that passed parameter is positive<br>
+</div>
+<pre><span id="VALg"><span class="keyword">val</span> g</span> : <code class="type">float -> float</code></pre><div class="info">
+<img class="argot_todoc" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAA1JREFUCNdjYGBgYAAAAAUAAV7zKjoAAAAASUVORK5CYII=" alt="todoc" title="todoc" align="middle"/>&nbsp;before release<br>
+</div>
+<pre><span id="VALh"><span class="keyword">val</span> h</span> : <code class="type">bool -> bool</code></pre><div class="info">
+some info...<br>
+<img class="argot_tofix" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAA1JREFUCNdjYGBgYAAAAAUAAV7zKjoAAAAASUVORK5CYII=" alt="tofix" title="tofix" align="middle"/>&nbsp;should never raise an exception<br>
+</div>
+<pre><span id="VALget"><span class="keyword">val</span> get</span> : <code class="type">unit -> int</code></pre><div class="info">
+some info...<br>
+<img class="argot_stateful" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAA1JREFUCNdjYGBgYAAAAAUAAV7zKjoAAAAASUVORK5CYII=" alt="stateful" title="stateful" align="middle"/>&nbsp;uses a random generator<br>
+</div>
+<pre><span id="VALapply"><span class="keyword">val</span> apply</span> : <code class="type">('a -> unit) -> 'a list -> unit</code></pre><div class="info">
+some info...<br>
+<img class="argot_threadunsafe" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAA1JREFUCNdjYGBgYAAAAAUAAV7zKjoAAAAASUVORK5CYII=" alt="threadunsafe" title="threadunsafe" align="middle"/>&nbsp;use <code class="code">apply_mt</code> in multithread application<br>
+</div>
+<pre><span id="VALapply_mt"><span class="keyword">val</span> apply_mt</span> : <code class="type">('a -> unit) -> 'a list -> unit</code></pre><div class="info">
+some info...<br>
+<img class="argot_threadsafe" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAA1JREFUCNdjYGBgYAAAAAUAAV7zKjoAAAAASUVORK5CYII=" alt="threadsafe" title="threadsafe" align="middle"/>&nbsp;use <code class="code">apply</code> in monothread application<br>
+</div>
+<pre><span id="VALcomplex"><span class="keyword">val</span> complex</span> : <code class="type">float -> float -> float * float</code></pre><div class="info">
+some info...<br>
+<img class="argot_attention" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAA1JREFUCNdjYGBgYAAAAAUAAV7zKjoAAAAASUVORK5CYII=" alt="attention" title="attention" align="middle"/>&nbsp;will not work if...<br>
+<img class="argot_note" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAA1JREFUCNdjYGBgYAAAAAUAAV7zKjoAAAAASUVORK5CYII=" alt="note" title="note" align="middle"/>&nbsp;may also diverge when...<br>
+<img class="argot_remark" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAA1JREFUCNdjYGBgYAAAAAUAAV7zKjoAAAAASUVORK5CYII=" alt="remark" title="remark" align="middle"/>&nbsp;one should be aware...<br>
+</div>
+<pre><span id="VALbuggy"><span class="keyword">val</span> buggy</span> : <code class="type">bool -> int</code></pre><div class="info">
+some info...<br>
+<img class="argot_info" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAA1JREFUCNdjYGBgYAAAAAUAAV7zKjoAAAAASUVORK5CYII=" alt="info" title="info" align="middle"/>&nbsp;additional info<br>
+<img class="argot_bug" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAA1JREFUCNdjYGBgYAAAAAUAAV7zKjoAAAAASUVORK5CYII=" alt="bug" title="bug" align="middle"/>&nbsp;when called with <code class="code">false</code><br>
+<img class="argot_error" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAA1JREFUCNdjYGBgYAAAAAUAAV7zKjoAAAAASUVORK5CYII=" alt="error" title="error" align="middle"/>&nbsp;when called with <code class="code">true</code><br>
+</div>
+<pre><span id="VALfresh"><span class="keyword">val</span> fresh</span> : <code class="type">string -> int</code></pre><div class="info">
+some info...<br>
+<img class="argot_new" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAA1JREFUCNdjYGBgYAAAAAUAAV7zKjoAAAAASUVORK5CYII=" alt="new" title="new" align="middle"/>&nbsp;handles the empty string<br>
+<img class="argot_warning" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAA1JREFUCNdjYGBgYAAAAAUAAV7zKjoAAAAASUVORK5CYII=" alt="warning" title="warning" align="middle"/>&nbsp;may not work if the string contains white spaces<br>
+</div>
+</body></html>
