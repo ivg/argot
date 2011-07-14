@@ -24,16 +24,18 @@ val encode : ?sz:int -> char Stream.t -> string
     used during encoding. *)
 
 val encode_string : string -> string
-(** [encode_string s] returns the contents of the string [s] encoded in base64. *)
+(** [encode_string s] returns the contents of the string [s] encoded in
+    base64. *)
 
 val encode_channel : in_channel -> string
-(** [encode_channel ch] returns the contents of the channel [ch] (from the
-    current position to the end of the channel) encoded in base64.
+(** [encode_channel ch] returns the contents of the channel [ch] (from
+    the current position to the end of the channel) encoded in base64.
 
     Raises an exception if an i/o error occurs. *)
 
 val encode_file : string -> string
-(** [encode_file f] returns the contents of the file [f] encoded in base64.
+(** [encode_file f] returns the contents of the file [f] encoded in
+    base64.
 
     Raises an exception if either the file does not exist,
     or an i/o error occurs. *)
