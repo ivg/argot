@@ -49,26 +49,28 @@ class argot_generator = object (self)
       str
 
   method private render_tag tag attrs buff text =
-    Buffer.add_string buff "<";
-    Buffer.add_string buff tag;
+    let add = Buffer.add_string buff in
+    add "<";
+    add tag;
     List.iter
       (fun (name, value) ->
-        Buffer.add_string buff " ";
-        Buffer.add_string buff name;
-        Buffer.add_string buff "=\"";
-        Buffer.add_string buff value;
-        Buffer.add_string buff "\"")
+        add " ";
+        add name;
+        add "=\"";
+        add value;
+        add "\"")
       attrs;
-    Buffer.add_string buff ">";
-    Buffer.add_string buff
+    add ">";
+    add
       (match text with
       | Text t -> self#trimmed_string_of_text t
       | String s -> s);
-    Buffer.add_string buff "</";
-    Buffer.add_string buff tag;
-    Buffer.add_string buff ">"
+    add "</";
+    add tag;
+    add ">"
 
   method! html_of_custom_text buff start text =
+    let add = Buffer.add_string buff in
     match start with
     | "s" -> self#render_tag "strike" [] buff (Text text)
     | "u" -> self#render_tag "u" [] buff (Text text)
@@ -124,39 +126,39 @@ class argot_generator = object (self)
             with Not_found ->
               Odoc_info.warning (Printf.sprintf "unknown token %S" id);
               "" in
-        Buffer.add_string buff contents
+        add contents
   | "image" ->
       let filename = self#trimmed_string_of_text text in
       let basename = Filename.basename filename in
       let contents = Base64.encode_file filename in
-      Buffer.add_string buff "<img class=\"flag\" src=\"data:image/png;base64,";
-      Buffer.add_string buff contents;
-      Buffer.add_string buff "\" alt=\"";
-      Buffer.add_string buff basename;
-      Buffer.add_string buff "\" title=\"";
-      Buffer.add_string buff basename;
-      Buffer.add_string buff "\"/>"
+      add "<img class=\"flag\" src=\"data:image/png;base64,";
+      add contents;
+      add "\" alt=\"";
+      add basename;
+      add "\" title=\"";
+      add basename;
+      add "\"/>"
   | "fold" ->
       let id = string_of_int next_fold_id in
       next_fold_id <- succ next_fold_id;
       let text = Printf.sprintf "%S" (self#trimmed_string_of_text text) in
-      Buffer.add_string buff "<script type=\"text/javascript\">\n";
-      Buffer.add_string buff "<!--\n";
-      Buffer.add_string buff ("  var argot_fold_state_" ^ id ^ " = false;\n");
-      Buffer.add_string buff ("  var argot_fold_text_" ^ id ^ " = " ^ text ^ ";\n");
-      Buffer.add_string buff ("  function argot_fold_" ^ id ^ "() {\n");
-      Buffer.add_string buff ("    if (argot_fold_state_" ^ id ^ ") {\n");
-      Buffer.add_string buff ("      document.getElementById('argot_fold_" ^ id ^ "').innerHTML = \"\";\n");
-      Buffer.add_string buff ("    } else {\n");
-      Buffer.add_string buff ("      document.getElementById('argot_fold_" ^ id ^ "').innerHTML = argot_fold_text_" ^ id ^ ";\n");
-      Buffer.add_string buff ("    };\n");
-      Buffer.add_string buff ("    argot_fold_state_" ^ id ^ " = !argot_fold_state_" ^ id ^";\n");
-      Buffer.add_string buff ("  }\n");
-      Buffer.add_string buff "//-->\n";
-      Buffer.add_string buff "</script>\n";
-      Buffer.add_string buff ("<a href=\"javascript:argot_fold_" ^ id ^ "();\">...</a>\n");
-      Buffer.add_string buff ("<div id=\"argot_fold_" ^ id ^ "\">\n");
-      Buffer.add_string buff "</div>\n"
+      add "<script type=\"text/javascript\">\n";
+      add "<!--\n";
+      add ("  var argot_fold_state_" ^ id ^ " = false;\n");
+      add ("  var argot_fold_text_" ^ id ^ " = " ^ text ^ ";\n");
+      add ("  function argot_fold_" ^ id ^ "() {\n");
+      add ("    if (argot_fold_state_" ^ id ^ ") {\n");
+      add ("      document.getElementById('argot_fold_" ^ id ^ "').innerHTML = \"\";\n");
+      add ("    } else {\n");
+      add ("      document.getElementById('argot_fold_" ^ id ^ "').innerHTML = argot_fold_text_" ^ id ^ ";\n");
+      add ("    };\n");
+      add ("    argot_fold_state_" ^ id ^ " = !argot_fold_state_" ^ id ^";\n");
+      add ("  }\n");
+      add "//-->\n";
+      add "</script>\n";
+      add ("<a href=\"javascript:argot_fold_" ^ id ^ "();\">...</a>\n");
+      add ("<div id=\"argot_fold_" ^ id ^ "\">\n");
+      add "</div>\n"
   | _ -> super#html_of_custom_text buff start text
 
   method private typevar_tag text =
