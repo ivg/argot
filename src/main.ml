@@ -22,6 +22,34 @@ type text_kind =
   | Text of Odoc_info.text
   | String of string
 
+let licenses = [
+  ["gpl"; "gpl1"; "gplv1"],
+  "http://www.gnu.org/licenses/old-licenses/gpl-1.0.html";
+  ["gpl2"; "gplv2"],
+  "http://www.gnu.org/licenses/old-licenses/gpl-2.0.html";
+  ["gpl3"; "gplv3"],
+  "http://www.gnu.org/licenses/gpl.html";
+  ["lgpl"; "lgplv2"],
+  "http://www.gnu.org/licenses/old-licenses/lgpl-2.0.html";
+  ["lgpl21"; "lgpl2.1"; "lgpl2_1"; "lgplv21"; "lgplv2.1"; "lgplv2_1"],
+  "http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html";
+  ["lgpl3"; "lgplv3"],
+  "http://www.gnu.org/licenses/lgpl.html";
+  ["agpl"],
+  "http://www.gnu.org/licenses/agpl.html";
+]
+
+let licenses : (string, string) Hashtbl.t =
+  let res = Hashtbl.create 17 in
+  List.iter
+    (fun (names, addr) ->
+      List.iter
+        (fun name ->
+          Hashtbl.add res name addr)
+        names)
+    licenses;
+  res
+
 class argot_generator = object (self)
 
   inherit Odoc_html.html as super
@@ -174,17 +202,7 @@ class argot_generator = object (self)
       ""
     end
 
-  method private register_placeholder_tag name =
-    let impl text =
-      (self#string_of_text text) ^ "<br>\n" in
-    tag_functions <- tag_functions @ [name, impl]
-
-  method private register_tag_with_prefix name prefix =
-    let impl text =
-      prefix ^ (self#string_of_text text) ^ "<br>\n" in
-    tag_functions <- tag_functions @ [name, impl]
-
-  method private register_tag_with_prefix_and_modifier name prefix modifier =
+  method private register_text_tag ?(prefix="") ?(modifier=(fun s -> s)) name =
     let impl text =
       let text = self#string_of_text text in
       prefix ^ (modifier text) ^ "<br>\n" in
@@ -204,34 +222,23 @@ class argot_generator = object (self)
     (* register custom tags *)
     tag_functions <- tag_functions @ ["typevar", self#typevar_tag];
 
-    self#register_placeholder_tag "obvious";
+    self#register_text_tag "obvious";
 
-    self#register_tag_with_prefix "alias" "Alias for ";
-    self#register_tag_with_prefix "synonym" "Synonym for ";
-    self#register_tag_with_prefix "abbreviation" "Abbreviation for ";
-    self#register_tag_with_prefix "equivalent" "Equivalent to ";
+    self#register_text_tag ~prefix:"Alias for " "alias";
+    self#register_text_tag ~prefix:"Synonym for " "synonym" ;
+    self#register_text_tag ~prefix:"Abbreviation for " "abbreviation";
+    self#register_text_tag ~prefix:"Equivalent to " "equivalent";
 
-    self#register_tag_with_prefix "copyright" "<b>Copyright:</b> ";
-    self#register_tag_with_prefix_and_modifier "license" "<b>License:</b> "
-      (fun text ->
+    self#register_text_tag ~prefix:"<b>Copyright:</b> " "copyright";
+    self#register_text_tag
+      ~prefix:"<b>License:</b> "
+      ~modifier:(fun text ->
         let enclose addr =
           Printf.sprintf "<a href=\"%s\" target=\"_blank\">%s</a>" addr text in
-        match String.lowercase text with
-        | "gpl" | "gpl1" | "gplv1" ->
-            enclose "http://www.gnu.org/licenses/old-licenses/gpl-1.0.html"
-        | "gpl2" | "gplv2" ->
-            enclose "http://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
-        | "gpl3" | "gplv3" ->
-            enclose "http://www.gnu.org/licenses/gpl.html"
-        | "lgpl" | "lgplv2" ->
-            enclose "http://www.gnu.org/licenses/old-licenses/lgpl-2.0.html"
-        | "lgpl21" | "lgpl2.1" | "lgpl2_1" | "lgplv21" | "lgplv2.1" | "lgplv2_1" ->
-            enclose "http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html"
-        | "lgpl3" | "lgplv3" ->
-            enclose "http://www.gnu.org/licenses/lgpl.html"
-        | "agpl" ->
-            enclose "http://www.gnu.org/licenses/agpl.html"
-        | _ -> text);
+        try
+          enclose (Hashtbl.find licenses (String.lowercase text))
+        with Not_found -> text)
+      "license";
 
     self#register_tag_with_icon "todo" ["unimplemented"];
     self#register_tag_with_icon "todoc" ["undocumented"; "docme"];
