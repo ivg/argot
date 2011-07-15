@@ -1,3 +1,14 @@
+Version 1.0-beta (2011-07-15):
+------------------------------
+  - switch to OCaml 3.12.1
+  - support for folding
+  - enhanced support for tables (horizontal span, check for well-formedness)
+  - @copyright and @license tags for legal information
+  - '-argot-version' command-line switch
+  - tests for base64 encoding
+  - support for ocamlfind has been fixed
+  - support for use as native plugin has been fixed
+
 Version 1.0-alpha (2010-12-31):
 -------------------------------
   - first public version
