@@ -16,7 +16,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-(** Style for tables. *)
+(** Support for tables. *)
 
 val css : string list
 (** The piece of CSS used for tables. *)
+
+type state
+(** The state of (possibly embedded) tables. *)
+
+val make_state : unit -> state
+(** Creates an empty state containing no table. *)
+
+val begin_table : state -> unit
+(** To be called when a new table begins. *)
+
+val end_table : state -> unit
+(** To be called when the current table ends. *)
+
+val begin_row : state -> unit
+(** To be called when a new row begins. *)
+
+val end_row : state -> unit
+(** To be called when the current row ends.
+
+    Will issue a warning if the current table is ill-formed. *)
+
+val add_cell : state -> unit
+(** To be called to notify the presence of a cell on the current row. *)
+
+val add_cells : int -> state -> unit
+(** To be called to notify the presence of several cells on the current row. *)

@@ -26,8 +26,7 @@ class argot_generator = object (self)
 
   inherit Odoc_html.html as super
 
-  val mutable last_row_length = None
-  val mutable current_row_length = 0
+  val tables = Tables.make_state ()
 
   val mutable next_fold_id = 0
 
@@ -76,24 +75,18 @@ class argot_generator = object (self)
     | "u" -> self#render_tag "u" [] buff (Text text)
     | "h" -> self#render_tag "font" ["style", "background-color: orange"] buff (Text text)
     | "table" ->
-        last_row_length <- None;
-        current_row_length <- 0;
+        Tables.begin_table tables;
         self#render_tag "table" ["class", "argot"] buff (Text text);
-        last_row_length <- None
+        Tables.end_table tables
     | "header" ->
-        current_row_length <- current_row_length + 1;
+        Tables.add_cell tables;
         self#render_tag "th" [] buff (Text text)
     | "row" ->
+        Tables.begin_row tables;
         self#render_tag "tr" [] buff (Text text);
-        (match last_row_length with
-        | Some x ->
-            if x <> current_row_length then
-              Odoc_info.warning "table line has invalid length"
-        | None ->
-            last_row_length <- Some current_row_length);
-        current_row_length <- 0
+        Tables.end_row tables
     | "data" ->
-        current_row_length <- current_row_length + 1;
+        Tables.add_cell tables;
         self#render_tag "td" [] buff (Text text)
     | "span" ->
         let text = self#trimmed_string_of_text text in
@@ -105,7 +98,7 @@ class argot_generator = object (self)
           try
             let n = int_of_string sz in
             if n >= 1 then begin
-              current_row_length <- current_row_length + n;
+              Tables.add_cells n tables;
               let text = String.sub text idx ((String.length text) - idx) in
               self#render_tag "td" ["colspan", sz] buff (String text)
             end else
