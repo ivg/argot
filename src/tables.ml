@@ -17,6 +17,8 @@
  *)
 
 let css = [
+  "";
+  "/* Argot tables */";
   "table.argot { border-collapse:collapse; }";
   "table.argot caption { font-size: smaller; }";
   "table.argot th { background-color: #90DDFF; border-color: black; border-spacing: 0px; border-width: 1px; border-style: solid; }";
