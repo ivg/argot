@@ -16,8 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-let definitions = ref []
-
 type text_kind =
   | Text of Odoc_info.text
   | String of string
@@ -112,7 +110,7 @@ class argot_generator = object (self)
         let id = self#trimmed_string_of_text text in
         let contents =
           try
-            List.assoc id !definitions
+            List.assoc id !Args.definitions
           with Not_found ->
             try
               Sys.getenv id
@@ -226,16 +224,7 @@ class argot_generator = object (self)
 end
 
 let () =
-  let open Odoc_info in
-  let argot_generator = ((new argot_generator) :> Args.doc_generator) in
-  Args.add_option
-    ("-define",
-     (let var = ref "" in
-     Arg.Tuple [Arg.Set_string var;
-                Arg.String (fun s -> definitions := (!var, s) :: !definitions)]),
-     "<name> <value>\n\t\tDefine a variable to be used by the token tag");
-  Args.add_option
-    ("-argot-version",
-     Arg.Unit (fun () -> Printf.printf "Argot %s\n" Version.value; exit 0),
-     "\n\t\tPrint version and exit\n");
-  Args.set_doc_generator (Some argot_generator)
+  let argot_generator = new argot_generator in
+  let doc_generator = (argot_generator :> Odoc_info.Args.doc_generator) in
+  Args.register ();
+  Odoc_info.Args.set_doc_generator (Some doc_generator)
