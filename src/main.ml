@@ -22,48 +22,6 @@ type text_kind =
   | Text of Odoc_info.text
   | String of string
 
-let licenses = [
-  ["gpl"; "gpl1"; "gplv1"],
-  "http://www.gnu.org/licenses/old-licenses/gpl-1.0.html";
-  ["gpl2"; "gplv2"],
-  "http://www.gnu.org/licenses/old-licenses/gpl-2.0.html";
-  ["gpl3"; "gplv3"],
-  "http://www.gnu.org/licenses/gpl.html";
-  ["lgpl"; "lgplv2"],
-  "http://www.gnu.org/licenses/old-licenses/lgpl-2.0.html";
-  ["lgpl21"; "lgpl2.1"; "lgpl2_1"; "lgplv21"; "lgplv2.1"; "lgplv2_1"],
-  "http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html";
-  ["lgpl3"; "lgplv3"],
-  "http://www.gnu.org/licenses/lgpl.html";
-  ["agpl"],
-  "http://www.gnu.org/licenses/agpl.html";
-  ["bsd"],
-  "http://www.freebsd.org/copyright/license.html";
-  ["mit"],
-  "http://www.opensource.org/licenses/mit-license.php";
-  ["apache"],
-  "http://www.apache.org/licenses/";
-  ["qpl"],
-  "http://doc.trolltech.com/3.0/license.html";
-  ["cecill"; "cecill-a"],
-  "http://www.cecill.info/licences/Licence_CeCILL_V2-en.html";
-  ["cecill-b"],
-  "http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.html";
-  ["cecill-c"],
-  "http://www.cecill.info/licences/Licence_CeCILL-C_V1-en.html"
-]
-
-let licenses : (string, string) Hashtbl.t =
-  let res = Hashtbl.create 17 in
-  List.iter
-    (fun (names, addr) ->
-      List.iter
-        (fun name ->
-          Hashtbl.add res name addr)
-        names)
-    licenses;
-  res
-
 class argot_generator = object (self)
 
   inherit Odoc_html.html as super
@@ -244,15 +202,7 @@ class argot_generator = object (self)
     self#register_text_tag ~prefix:"Equivalent to " "equivalent";
 
     self#register_text_tag ~prefix:"<b>Copyright:</b> " "copyright";
-    self#register_text_tag
-      ~prefix:"<b>License:</b> "
-      ~modifier:(fun text ->
-        let enclose addr =
-          Printf.sprintf "<a href=\"%s\" target=\"_blank\">%s</a>" addr text in
-        try
-          enclose (Hashtbl.find licenses (String.lowercase text))
-        with Not_found -> text)
-      "license";
+    self#register_text_tag ~prefix:"<b>License:</b> " ~modifier:Licenses.to_html "license";
 
     self#register_tag_with_icon "todo" ["unimplemented"];
     self#register_tag_with_icon "todoc" ["undocumented"; "docme"];
