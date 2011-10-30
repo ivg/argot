@@ -211,14 +211,7 @@ class argot_generator = object (self)
     (* append css *)
     default_style_options <- default_style_options
       @ Tables.css
-      @ ["";
-         "/* Argot icons -- from the \"Silk icon set 1.3\" by Mark James, available at http://www.famfamfam.com/lab/icons/silk/ */"]
-      @ (List.map
-           (fun (name, base64) ->
-             Printf.sprintf ".argot_%s { border: 0px; width: 24px; height: 24px; background-image:url(data:image/png;base64,%s); background-repeat:no-repeat; }"
-               name
-               base64)
-           Icons.all)
+      @ Icons.css
       @ [""]
   end
 end

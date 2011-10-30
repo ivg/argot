@@ -66,3 +66,6 @@ val warning_base64 : string
 val all : (string * string) list
 (** Association list from icon names to their related image data
     (encoded in base64). *)
+
+val css : string list
+(** The piece of CSS used for icons. *)

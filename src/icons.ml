@@ -62,3 +62,22 @@ let all = [
   "tofix", tofix_base64;
   "warning", warning_base64;
 ]
+
+let icons_source =
+  "the 'Silk icon set 1.3' by Mark James, "
+  ^ "available at http://www.famfamfam.com/lab/icons/silk/"
+
+let style =
+  "border: 0px; width: 24px; height: 24px; background-repeat:no-repeat;"
+
+let css =
+  ["";
+   "/* Argot icons -- from " ^ icons_source ^ " */"]
+  @ (List.map
+       (fun (name, base64) ->
+         Printf.sprintf
+           ".argot_%s { %s background-image:url(data:image/png;base64,%s); }"
+           style
+           name
+           base64)
+       all)
