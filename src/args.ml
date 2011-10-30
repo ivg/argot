@@ -16,17 +16,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-let definitions = ref []
+let definitions = Definitions.make ()
 
 let register () =
   Odoc_info.Args.add_option
     ("-define",
      (let var = ref "" in
      Arg.Tuple [Arg.Set_string var;
-                Arg.String (fun s -> definitions := (!var, s) :: !definitions)]),
+                Arg.String (fun s -> Definitions.add definitions !var s)]),
      "<name> <value>\n\t\tDefine a variable to be used by the token tag");
+  Odoc_info.Args.add_option
+    ("-definitions",
+     Arg.String (fun s -> Definitions.add_from_file definitions s),
+     "<file>\n\t\tLoad definitions from file");
   Odoc_info.Args.add_option
     ("-argot-version",
      Arg.Unit (fun () -> Printf.printf "Argot %s\n" Version.value; exit 0),
-     "\n\t\tPrint version and exit\n");
+     "\n\t\tPrint version and exit\n")
 

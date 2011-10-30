@@ -27,7 +27,9 @@ let () =
   let mlpack_chan = open_out mlpack_file in
   Array.iter
     (fun filename ->
-      if Pathname.check_extension filename "mli" then begin
+      if (Pathname.check_extension filename "mli")
+    || (Pathname.check_extension filename "mly")
+    || (Pathname.check_extension filename "mll") then begin
         let modulename = Pathname.remove_extension filename in
         let modulename = Pathname.basename modulename in
         let modulename = String.capitalize modulename in

@@ -1,3 +1,7 @@
 (** Test for token.
 
-    Hello {token NAME}. *)
+    Hello {token NAME}.
+
+    Location: {token LOC}
+
+ *)

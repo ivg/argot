@@ -108,16 +108,7 @@ class argot_generator = object (self)
     | "caption" -> self#render_tag "caption" [] buff (Text text)
     | "token" ->
         let id = self#trimmed_string_of_text text in
-        let contents =
-          try
-            List.assoc id !Args.definitions
-          with Not_found ->
-            try
-              Sys.getenv id
-            with Not_found ->
-              Odoc_info.warning (Printf.sprintf "unknown token %S" id);
-              "" in
-        add contents
+        add (Definitions.get Args.definitions id)
   | "image" ->
       let filename = self#trimmed_string_of_text text in
       let basename = Filename.basename filename in

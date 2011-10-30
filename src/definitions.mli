@@ -16,10 +16,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-(** Support for command-line switches. *)
+(** Support for definitions. *)
 
-val definitions : Definitions.t
-(** Definitions, that is bindings from names to values. *)
+type t
+(** The type of definitions, that is bindings from names to values. *)
 
-val register : unit -> unit
-(** Registers the various command-line switches. *)
+val make : unit -> t
+(** Create an empty set of definitions. *)
+
+val get : t -> string -> string
+(** [get defs name] returns the value associated to [name] in [defs]. *)
+
+val add : t -> string -> string -> unit
+(** [add defs name value] adds a binding from [name] to [value] to the set of
+    definitions [defs]. *)
+
+val add_from_file : t -> string -> unit
+(** [add_from_file defs filename] adds the bindings read from the file named
+    [filename] to the set of definitions [defs]. *)
+
