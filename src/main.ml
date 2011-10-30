@@ -221,7 +221,7 @@ class argot_generator = object (self)
     default_style_options <- default_style_options
       @ ["";
          "/* Argot tables */"]
-      @ Table.css
+      @ Tables.css
       @ ["";
          "/* Argot icons -- from the \"Silk icon set 1.3\" by Mark James, available at http://www.famfamfam.com/lab/icons/silk/ */"]
       @ (List.map
