@@ -37,6 +37,20 @@ let licenses = [
   "http://www.gnu.org/licenses/lgpl.html";
   ["agpl"],
   "http://www.gnu.org/licenses/agpl.html";
+  ["bsd"],
+  "http://www.freebsd.org/copyright/license.html";
+  ["mit"],
+  "http://www.opensource.org/licenses/mit-license.php";
+  ["apache"],
+  "http://www.apache.org/licenses/";
+  ["qpl"],
+  "http://doc.trolltech.com/3.0/license.html";
+  ["cecill"; "cecill-a"],
+  "http://www.cecill.info/licences/Licence_CeCILL_V2-en.html";
+  ["cecill-b"],
+  "http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.html";
+  ["cecill-c"],
+  "http://www.cecill.info/licences/Licence_CeCILL-C_V1-en.html"
 ]
 
 let licenses : (string, string) Hashtbl.t =
