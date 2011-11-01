@@ -18,6 +18,8 @@
 
 let definitions = Definitions.make ()
 
+let search = ref false
+
 let register () =
   Odoc_info.Args.add_option
     ("-define",
@@ -29,6 +31,10 @@ let register () =
     ("-definitions",
      Arg.String (fun s -> Definitions.add_from_file definitions s),
      "<file>\n\t\tLoad definitions from file");
+  Odoc_info.Args.add_option
+    ("-search",
+     Arg.Set search,
+     "\n\t\tGenerate search information");
   Odoc_info.Args.add_option
     ("-argot-version",
      Arg.Unit (fun () -> Printf.printf "Argot %s\n" Version.value; exit 0),

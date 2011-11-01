@@ -16,13 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-(** Support for command-line switches. *)
+(** Support for search. *)
 
-val definitions : Definitions.t
-(** Definitions, that is bindings from names to values. *)
+val generate_data : string -> Odoc_html.html -> unit
+(** Generates the JavaScript data file in the passed directory. *)
 
-val search : bool ref
-(** Whether search information should be generated. *)
+val generate_html : string -> unit
+(** Generates the HTML file for search page in the passed directory. *)
 
-val register : unit -> unit
-(** Registers the various command-line switches. *)
+val link : string
+(** HTML link to search page. *)
+
+val css : string list
+(** The piece of CSS used for search. *)

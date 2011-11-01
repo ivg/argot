@@ -172,6 +172,21 @@ class argot_generator = object (self)
         (self#string_of_text text) in
     tag_functions <- tag_functions @ (List.map (fun x -> x, impl) (name :: synonyms))
 
+  method! print_navbar b pre post name =
+    super#print_navbar b pre post name;
+    if !Args.search then Buffer.add_string b Search.link
+
+  method! html_of_Index_list b =
+    super#html_of_Index_list b;
+    if !Args.search then Buffer.add_string b Search.link
+
+  method! generate module_list =
+    super#generate module_list;
+    if !Args.search then
+      Search.generate_data
+        !Odoc_info.Args.target_dir
+        (self :> Odoc_html.html)
+
   initializer begin
     (* register custom tags *)
     tag_functions <- tag_functions @ ["typevar", self#typevar_tag];
@@ -203,12 +218,18 @@ class argot_generator = object (self)
     default_style_options <- default_style_options
       @ Tables.css
       @ Icons.css
+      @ Search.css
       @ [""]
   end
 end
 
 let () =
-  let argot_generator = new argot_generator in
-  let doc_generator = (argot_generator :> Odoc_info.Args.doc_generator) in
+  let generator = (new argot_generator :> Odoc_info.Args.doc_generator) in
   Args.register ();
-  Odoc_info.Args.set_doc_generator (Some doc_generator)
+  at_exit
+    (fun () ->
+      if !Args.search then begin
+        Search.generate_html !Odoc_info.Args.target_dir;
+        Search_js.generate_files !Odoc_info.Args.target_dir
+      end);
+  Odoc_info.Args.set_doc_generator (Some generator)

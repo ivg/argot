@@ -16,13 +16,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-(** Support for command-line switches. *)
+(** Auxiliary Javascript files. *)
 
-val definitions : Definitions.t
-(** Definitions, that is bindings from names to values. *)
+val parser : string list
+(** Contents of ["argot_parser.js"] file. *)
 
-val search : bool ref
-(** Whether search information should be generated. *)
+val search : string list
+(** Contents of ["argot_search.js"] file. *)
 
-val register : unit -> unit
-(** Registers the various command-line switches. *)
+val types : string list
+(** Contents of ["argot_types.js"] file. *)
+
+val generate_files : string -> unit
+(** Generates JavaScript files in the passed directory. *)
+

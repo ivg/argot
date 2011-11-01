@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *)
 
-(** Icons for additional tags. *)
+(** Icons for additional tags, and search. *)
 
 val attention_base64 : string
 (** Data for the 'attention' icon, in base64 encoding. *)
@@ -38,6 +38,9 @@ val note_base64 : string
 
 val remark_base64 : string
 (** Data for the 'remark' icon, in base64 encoding. *)
+
+val search_base64 : string
+(** Data for the 'search' icon, in base64 encoding. *)
 
 val stateful_base64 : string
 (** Data for the 'stateful' icon, in base64 encoding. *)
