@@ -28,4 +28,4 @@ val link : string
 (** HTML link to search page. *)
 
 val css : string list
-(** The piece of CSS used for search. *)
+(** The piece of CSS used for search results. *)

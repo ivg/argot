@@ -26,12 +26,12 @@ let trim_gen left right s =
   let i = ref 0 in
   let len = String.length s in
   if left then
-    while (!i < len) && (s.[!i] = ' ') do
+    while (!i < len) && (is_whitespace s.[!i]) do
       incr i
     done;
   let j = ref (pred len) in
   if right then
-    while (!j >= !i) && (s.[!j] = ' ') do
+    while (!j >= !i) && (is_whitespace s.[!j]) do
       decr j
     done;
   if j >= i then
@@ -71,7 +71,8 @@ let write_lines filename lines =
       (fun line ->
         output_string chan line;
         output_char chan '\n')
-      lines
+      lines;
+    close_out_noerr chan
   with e ->
     close_out_noerr chan;
     raise e

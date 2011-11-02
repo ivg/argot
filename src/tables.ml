@@ -55,7 +55,7 @@ let end_row st =
   | Some x ->
       if x <> st.current_row_length then
         let msg =
-          Printf.sprintf "table line has invalid length (%d instead of %d)"
+          Printf.sprintf "table row has invalid length (%d instead of %d)"
             st.current_row_length
             x in
         Odoc_info.warning msg
