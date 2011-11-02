@@ -220,7 +220,7 @@ let generate_html path =
       "    </form>";
       "    <hr width=\"80%\" style=\"border-color: black; border-width: 1px; border-style: solid;\"/>";
       "    <br/>";
-      "    <div id=\"results\">";
+      "    <div id=\"results\" style=\"height: 85%; overflow: scroll;\">";
       "    </div>";
       "</body>" ]
 
