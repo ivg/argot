@@ -1,3 +1,15 @@
+Version 1.0 (2011-11-02):
+-------------------------
+  - new '-search' command-line switch to generate search information
+    (available on HTML pages through the magnifying glass icon)
+  - search by exact name
+  - search by name using regular expression
+  - search by type using isomorphisms (experimental)
+  - new '-definitions' command-line switch to load variables from file
+  - correct handling of embedded tables
+  - more predefined licenses for the '@license' tag
+  - some refactoring
+
 Version 1.0-beta (2011-07-15):
 ------------------------------
   - switch to OCaml 3.12.1
