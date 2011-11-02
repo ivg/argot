@@ -35,9 +35,11 @@ val trim : string -> string
 
 val read_lines : string -> string list
 (** [read_lines filename] returns the lines from the file named [filename].
+
     Raises an exception if an i/o error occurs. *)
 
 val write_lines : string -> string list -> unit
-(** [write_lines filename lines] writes the lines from [lines] to the file
+(** [write_lines filename lines] writes the strings from [lines] to the file
     named [filename].
+
     Raises an exception if an i/o error occurs. *)

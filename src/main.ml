@@ -109,39 +109,39 @@ class argot_generator = object (self)
     | "token" ->
         let id = self#trimmed_string_of_text text in
         add (Definitions.get Args.definitions id)
-  | "image" ->
-      let filename = self#trimmed_string_of_text text in
-      let basename = Filename.basename filename in
-      let contents = Base64.encode_file filename in
-      add "<img class=\"flag\" src=\"data:image/png;base64,";
-      add contents;
-      add "\" alt=\"";
-      add basename;
-      add "\" title=\"";
-      add basename;
-      add "\"/>"
-  | "fold" ->
-      let id = string_of_int next_fold_id in
-      next_fold_id <- succ next_fold_id;
-      let text = Printf.sprintf "%S" (self#trimmed_string_of_text text) in
-      add "<script type=\"text/javascript\">\n";
-      add "<!--\n";
-      add ("  var argot_fold_state_" ^ id ^ " = false;\n");
-      add ("  var argot_fold_text_" ^ id ^ " = " ^ text ^ ";\n");
-      add ("  function argot_fold_" ^ id ^ "() {\n");
-      add ("    if (argot_fold_state_" ^ id ^ ") {\n");
-      add ("      document.getElementById('argot_fold_" ^ id ^ "').innerHTML = \"\";\n");
-      add ("    } else {\n");
-      add ("      document.getElementById('argot_fold_" ^ id ^ "').innerHTML = argot_fold_text_" ^ id ^ ";\n");
-      add ("    };\n");
-      add ("    argot_fold_state_" ^ id ^ " = !argot_fold_state_" ^ id ^";\n");
-      add ("  }\n");
-      add "//-->\n";
-      add "</script>\n";
-      add ("<a href=\"javascript:argot_fold_" ^ id ^ "();\">...</a>\n");
-      add ("<div id=\"argot_fold_" ^ id ^ "\">\n");
-      add "</div>\n"
-  | _ -> super#html_of_custom_text buff start text
+    | "image" ->
+        let filename = self#trimmed_string_of_text text in
+        let basename = Filename.basename filename in
+        let contents = Base64.encode_file filename in
+        add "<img class=\"flag\" src=\"data:image/png;base64,";
+        add contents;
+        add "\" alt=\"";
+        add basename;
+        add "\" title=\"";
+        add basename;
+        add "\"/>"
+    | "fold" ->
+        let id = string_of_int next_fold_id in
+        next_fold_id <- succ next_fold_id;
+        let text = Printf.sprintf "%S" (self#trimmed_string_of_text text) in
+        add "<script type=\"text/javascript\">\n";
+        add "<!--\n";
+        add ("  var argot_fold_state_" ^ id ^ " = false;\n");
+        add ("  var argot_fold_text_" ^ id ^ " = " ^ text ^ ";\n");
+        add ("  function argot_fold_" ^ id ^ "() {\n");
+        add ("    if (argot_fold_state_" ^ id ^ ") {\n");
+        add ("      document.getElementById('argot_fold_" ^ id ^ "').innerHTML = \"\";\n");
+        add ("    } else {\n");
+        add ("      document.getElementById('argot_fold_" ^ id ^ "').innerHTML = argot_fold_text_" ^ id ^ ";\n");
+        add ("    };\n");
+        add ("    argot_fold_state_" ^ id ^ " = !argot_fold_state_" ^ id ^";\n");
+        add ("  }\n");
+        add "//-->\n";
+        add "</script>\n";
+        add ("<a href=\"javascript:argot_fold_" ^ id ^ "();\">...</a>\n");
+        add ("<div id=\"argot_fold_" ^ id ^ "\">\n");
+        add "</div>\n"
+    | _ -> super#html_of_custom_text buff start text
 
   method private typevar_tag text =
     let str = self#string_of_text text in

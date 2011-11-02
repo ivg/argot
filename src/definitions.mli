@@ -28,10 +28,10 @@ val get : t -> string -> string
 (** [get defs name] returns the value associated to [name] in [defs]. *)
 
 val add : t -> string -> string -> unit
-(** [add defs name value] adds a binding from [name] to [value] to the set of
-    definitions [defs]. *)
+(** [add defs name value] adds a binding from [name] to [value] to the set
+    of definitions [defs]. *)
 
 val add_from_file : t -> string -> unit
-(** [add_from_file defs filename] adds the bindings read from the file named
-    [filename] to the set of definitions [defs]. *)
+(** [add_from_file defs filename] adds the bindings read from the file
+    named [filename] to the set of definitions [defs]. *)
 
