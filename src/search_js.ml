@@ -449,12 +449,7 @@ let search = [
   "";
   "// Parses the passed string into a type";
   "function parse_type(s) {";
-  "    try {";
-  "        return argot_parser.parse(s);";
-  "    } catch (e) {";
-  "        alert('Cannot parse type');";
-  "        throw e;";
-  "    }";
+  "    return argot_parser.parse(s);";
   "}";
   "";
   "// Constructs an 'OCaml_type'";
