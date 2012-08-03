@@ -62,7 +62,13 @@ let predefined_exceptions =
 let predefined_constructors =
   ["Some"; "None"]
 
+module StringSet = Set.Make (String)
+
+let word_boundary = Str.regexp "\\b"
+let is_word = Str.regexp "[a-zA-Z0-9]+"
+
 let generate_data path self =
+  let args_full_text = !Args.full_text in
   let open Odoc_info in
   let first_setence info =
     let buff = Buffer.create 512 in
@@ -72,16 +78,35 @@ let generate_data path self =
     Printf.sprintf "<i>(... %s ...)</i>" s in
   let filename = Filename.concat path "argot_data.js" in
   let chan = open_out filename in
-  let add_ocaml_element short_name full_name kind typ ref doc =
+  let add_ocaml_element short_name full_name kind typ ref full_text doc =
+    let words =
+      if args_full_text then begin
+        let set = match full_text with
+        | Some info ->
+            let str = string_of_info info in
+            let l = Str.split word_boundary str in
+            List.fold_left
+              (fun acc elem ->
+                if (String.length elem > 2) && (Str.string_match is_word elem 0) then
+                  StringSet.add ("\"" ^ (String.uppercase elem) ^ "\"") acc
+                else
+                  acc)
+              StringSet.empty
+              l
+        | None -> StringSet.empty in
+        "[" ^ (String.concat ", " (StringSet.elements set)) ^ "]"
+      end else
+        "[]" in
     Printf.fprintf
       chan
-      "add_ocaml_element(%S, %S, %S, %S, %S, %S);\n"
+      "add_ocaml_element(%S, %S, %S, %S, %S, %S, %s);\n"
       short_name
       full_name
       kind
       typ
       ref
-      doc in
+      doc
+      words in
   let iter l access =
     List.iter
       (fun x ->
@@ -91,20 +116,21 @@ let generate_data path self =
         let kind = access.get_kind x in
         let typ = access.get_type x in
         let ref = access.get_ref x in
-        let doc = first_setence (access.get_doc x) in
-        add_ocaml_element simple full kind typ ref doc)
+        let full_text = access.get_doc x in
+        let doc = first_setence full_text in
+        add_ocaml_element simple full kind typ ref full_text doc)
       l in
   let string_of_type_expr_list l =
     String.concat " * " (List.map string_of_type_expr l) in
   try
     List.iter
-      (fun t -> add_ocaml_element t t "type" t "" "built-in")
+      (fun t -> add_ocaml_element t t "type" t "" None "built-in")
       predefined_types;
     List.iter
-      (fun (n, t) -> add_ocaml_element n n "exception" t "" "built-in")
+      (fun (n, t) -> add_ocaml_element n n "exception" t "" None "built-in")
       predefined_exceptions;
     List.iter
-      (fun n -> add_ocaml_element n n "constructor" "option" "" "built-in")
+      (fun n -> add_ocaml_element n n "constructor" "option" "" None "built-in")
       predefined_constructors;
     iter
       self#list_values
@@ -137,17 +163,20 @@ let generate_data path self =
               (fun x ->
                 let name = x.Type.vc_name in
                 let typ = string_of_type_expr_list x.Type.vc_args in
-                let doc = first_setence (make_info x.Type.vc_text) in
-                add_ocaml_element name name "constructor" typ ref doc)
+                let full_text = make_info x.Type.vc_text in
+                let doc = first_setence full_text in
+                add_ocaml_element name name "constructor" typ ref full_text doc)
               l
         | Type.Type_record l ->
             List.iter
               (fun x ->
                 let name = x.Type.rf_name in
                 let typ = string_of_type_expr x.Type.rf_type in
-                let doc = first_setence (make_info x.Type.rf_text) in
-                add_ocaml_element name name "field" typ ref doc)
-              l)
+                let full_text = make_info x.Type.rf_text in
+                let doc = first_setence full_text in
+                add_ocaml_element name name "field" typ ref full_text doc)
+              l
+)
       self#list_types;
     iter
       self#list_attributes
@@ -219,6 +248,7 @@ let generate_html path =
       "      <input type=\"radio\" name=\"mode\" value=\"name\" checked=\"checked\"/>&nbsp;by name<br/>"; 
       "      <input type=\"radio\" name=\"mode\" value=\"regexp\"/>&nbsp;by regexp<br/>";
       "      <input type=\"radio\" name=\"mode\" value=\"type\"/>&nbsp;by type<br/>";
+      "      <input type=\"radio\" name=\"mode\" value=\"fulltext\"/>&nbsp;by full text<br/>";
       "    </form>";
       "    <hr width=\"80%\" style=\"border-color: black; border-width: 1px; border-style: solid;\"/>";
       "    <br/>";

@@ -22,6 +22,8 @@ let search = ref false
 
 let search_frame = ref false
 
+let full_text = ref false
+
 let register () =
   Odoc_info.Args.add_option
     ("-define",
@@ -41,6 +43,10 @@ let register () =
     ("-search-frame",
      Arg.Set search_frame,
      "\n\t\tSearch from a frame");
+  Odoc_info.Args.add_option
+    ("-full-text",
+     Arg.Set full_text,
+     "\n\t\tEnable full-text search");
   Odoc_info.Args.add_option
     ("-argot-version",
      Arg.Unit (fun () -> Printf.printf "Argot %s\n" Version.value; exit 0),

@@ -27,5 +27,8 @@ val search : bool ref
 val search_frame : bool ref
 (** Whether search should appear in a frame. *)
 
+val full_text : bool ref
+(** Whether full-text search is enabled. *)
+
 val register : unit -> unit
 (** Registers the various command-line switches. *)
