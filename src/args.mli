@@ -24,5 +24,8 @@ val definitions : Definitions.t
 val search : bool ref
 (** Whether search information should be generated. *)
 
+val search_frame : bool ref
+(** Whether search should appear in a frame. *)
+
 val register : unit -> unit
 (** Registers the various command-line switches. *)

@@ -198,6 +198,8 @@ let generate_data path self =
 
 let generate_html path =
   let filename = Filename.concat path "argot_search.html" in
+  let where =
+    if !Args.search_frame then "'frame'" else "'window'" in
   Utils.write_lines
     filename
     [ "<html>";
@@ -210,19 +212,40 @@ let generate_html path =
       "    <script type=\"text/javascript\" src=\"argot_data.js\"></script>";
       "  </head>";
       "  <body onload=\"document.form.query.focus();\">";
-      "    <form name=\"form\" action=\"javascript:exec_query();\">";
-      "      <input type=\"text\" name=\"query\" value=\"\" size=\"32\"/>";
+      "    <form name=\"form\" action=\"javascript:exec_query(" ^ where ^ ");\">";
+      "      <input type=\"text\" name=\"query\" value=\"\" size=\"42\"/>";
       "      <input type=\"submit\" value=\"search\"/>";
       "      <br/>";
-      "      <input type=\"radio\" name=\"mode\" value=\"name\" checked=\"checked\"/>&nbsp;by name&nbsp;&nbsp;"; 
-      "      <input type=\"radio\" name=\"mode\" value=\"regexp\"/>&nbsp;by regexp&nbsp;&nbsp;";
-      "      <input type=\"radio\" name=\"mode\" value=\"type\"/>&nbsp;by type&nbsp;&nbsp;";
+      "      <input type=\"radio\" name=\"mode\" value=\"name\" checked=\"checked\"/>&nbsp;by name<br/>"; 
+      "      <input type=\"radio\" name=\"mode\" value=\"regexp\"/>&nbsp;by regexp<br/>";
+      "      <input type=\"radio\" name=\"mode\" value=\"type\"/>&nbsp;by type<br/>";
       "    </form>";
       "    <hr width=\"80%\" style=\"border-color: black; border-width: 1px; border-style: solid;\"/>";
       "    <br/>";
-      "    <div id=\"results\" style=\"height: 85%; overflow: scroll;\">";
+      (if !Args.search_frame then
+        "    <div id=\"results\"\">"
+      else
+        "    <div id=\"results\" style=\"height: 75%; overflow: scroll;\">");
       "    </div>";
-      "</body>" ]
+      "  </body>";
+      "</html>" ];
+  if !Args.search then begin
+    let filename = Filename.concat path "argot_index.html" in
+    let title = match !Odoc_args.title with Some x -> x | None -> "Argot search" in
+    Utils.write_lines
+      filename
+      [ "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Frameset//EN\" \"http://www.w3.org/TR/html4/frameset.dtd\">";
+        "<html>";
+        "  <head>";
+        "    <title>" ^ title ^ "</title>";
+        "  </head>";
+        "  <frameset cols=\"400,*\">";
+        "    <frame src=\"argot_search.html\" name=\"search_frame\">";
+        "    <frame src=\"index.html\" name=\"main_frame\">";
+        "    <noframe><body><i>frames are not supported</i></body></noframe>";
+        "  </frameset>";
+        "</html>" ];
+  end
 
 let link =
   let code = "window.open('argot_search.html', 'search', 'width=400,height=500,toolbar=no,menubar=no,resizable=no,status=no')" in

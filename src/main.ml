@@ -174,11 +174,13 @@ class argot_generator = object (self)
 
   method! print_navbar b pre post name =
     super#print_navbar b pre post name;
-    if !Args.search then Buffer.add_string b Search.link
+    if !Args.search && not !Args.search_frame then
+      Buffer.add_string b Search.link
 
   method! html_of_Index_list b =
     super#html_of_Index_list b;
-    if !Args.search then Buffer.add_string b Search.link
+    if !Args.search && not !Args.search_frame then
+      Buffer.add_string b Search.link
 
   method! generate module_list =
     super#generate module_list;

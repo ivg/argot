@@ -20,6 +20,8 @@ let definitions = Definitions.make ()
 
 let search = ref false
 
+let search_frame = ref false
+
 let register () =
   Odoc_info.Args.add_option
     ("-define",
@@ -35,6 +37,10 @@ let register () =
     ("-search",
      Arg.Set search,
      "\n\t\tGenerate search information");
+  Odoc_info.Args.add_option
+    ("-search-frame",
+     Arg.Set search_frame,
+     "\n\t\tSearch from a frame");
   Odoc_info.Args.add_option
     ("-argot-version",
      Arg.Unit (fun () -> Printf.printf "Argot %s\n" Version.value; exit 0),
