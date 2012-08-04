@@ -107,6 +107,8 @@ let generate_data path self =
       ref
       doc
       words in
+  let add_manifest n f t =
+    Printf.fprintf chan "add_manifest(%S, %S, %S);\n" n f t in
   let iter l access =
     List.iter
       (fun x ->
@@ -132,6 +134,34 @@ let generate_data path self =
     List.iter
       (fun n -> add_ocaml_element n n "constructor" "option" "" None "built-in")
       predefined_constructors;
+    List.iter (* output type manifests first *)
+      (fun x ->
+        let type_params =
+          List.map
+            (fun (x, _, _) ->
+              string_of_type_expr x)
+            x.Type.ty_parameters in
+        let type_expr =
+          match type_params with
+          | [] -> x.Type.ty_name
+          | [e] -> e ^ " " ^ x.Type.ty_name
+          | l -> "(" ^ (String.concat ", " l) ^ ") " ^ x.Type.ty_name in
+        match x.Type.ty_kind with
+        | Type.Type_abstract ->
+            (match x.Type.ty_manifest with
+            | Some te ->
+                add_manifest x.Type.ty_name type_expr (string_of_type_expr te)
+            | None -> ())
+        | Type.Type_variant _ -> ()
+        | Type.Type_record l ->
+            let types =
+              List.map
+                (fun x ->
+                  "(" ^ (string_of_type_expr x.Type.rf_type) ^ ")")
+                l in
+            let types = String.concat " * " types in
+            add_manifest x.Type.ty_name type_expr types)
+      self#list_types;
     iter
       self#list_values
       { get_name = (fun x -> x.Value.val_name);
@@ -175,8 +205,7 @@ let generate_data path self =
                 let full_text = make_info x.Type.rf_text in
                 let doc = first_setence full_text in
                 add_ocaml_element name name "field" typ ref full_text doc)
-              l
-)
+              l)
       self#list_types;
     iter
       self#list_attributes
@@ -247,7 +276,8 @@ let generate_html path =
       "      <br/>";
       "      <input type=\"radio\" name=\"mode\" value=\"name\" checked=\"checked\"/>&nbsp;by name<br/>"; 
       "      <input type=\"radio\" name=\"mode\" value=\"regexp\"/>&nbsp;by regexp<br/>";
-      "      <input type=\"radio\" name=\"mode\" value=\"type\"/>&nbsp;by type<br/>";
+      "      <input type=\"radio\" name=\"mode\" value=\"type\"/>&nbsp;by type&nbsp;&nbsp;&nbsp;";
+      "      <input type=\"radio\" name=\"mode\" value=\"typewithmanifest\"/>&nbsp;by type, using manifest<br/>";
       "      <input type=\"radio\" name=\"mode\" value=\"fulltext\"/>&nbsp;by full text<br/>";
       "    </form>";
       "    <hr width=\"80%\" style=\"border-color: black; border-width: 1px; border-style: solid;\"/>";
