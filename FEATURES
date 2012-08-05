@@ -1,5 +1,6 @@
 - search by exact name or regular expression over names
 - search by type (up to isomorphism)
+- search by words appearing in comments
 - stroked, underlined, and highlighted styles
 - image data inclusion
 - full table support (caption, headers, rows, data, and horizontal span)

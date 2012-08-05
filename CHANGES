@@ -1,3 +1,13 @@
+Version 1.1 (2012-08-05):
+-------------------------
+  - full-text search over comments
+  - search by type can now take advantage of type manifests
+  - search by type now handles labeled parameters
+  - search by type now handles optional parameters
+  - new '-search-frame' command-line switch to have search panel in a frame,
+    rather than in a window
+  - update for OCaml 4.00.0
+
 Version 1.0 (2011-11-02):
 -------------------------
   - new '-search' command-line switch to generate search information
