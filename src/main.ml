@@ -20,9 +20,10 @@ type text_kind =
   | Text of Odoc_info.text
   | String of string
 
-class argot_generator = object (self)
+module Generator (G : Odoc_html.Html_generator) = struct
+class html = object (self)
 
-  inherit Odoc_html.html as super
+  inherit Odoc_html.Generator.html as super
 
   val tables = Tables.make_state ()
 
@@ -186,8 +187,8 @@ class argot_generator = object (self)
     super#generate module_list;
     if !Args.search then
       Search.generate_data
-        !Odoc_info.Args.target_dir
-        (self :> Odoc_html.html)
+        !Odoc_info.Global.target_dir
+        (self :> Odoc_html.Generator.html)
 
   initializer begin
     (* register custom tags *)
@@ -224,14 +225,14 @@ class argot_generator = object (self)
       @ [""]
   end
 end
+end
 
 let () =
-  let generator = (new argot_generator :> Odoc_info.Args.doc_generator) in
   Args.register ();
   at_exit
     (fun () ->
       if !Args.search then begin
-        Search.generate_html !Odoc_info.Args.target_dir;
-        Search_js.generate_files !Odoc_info.Args.target_dir
+        Search.generate_html !Odoc_info.Global.target_dir;
+        Search_js.generate_files !Odoc_info.Global.target_dir
       end);
-  Odoc_info.Args.set_doc_generator (Some generator)
+  Odoc_args.extend_html_generator (module Generator : Odoc_gen.Html_functor)

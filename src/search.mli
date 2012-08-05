@@ -18,7 +18,7 @@
 
 (** Support for search. *)
 
-val generate_data : string -> Odoc_html.html -> unit
+val generate_data : string -> Odoc_html.Generator.html -> unit
 (** Generates the JavaScript data file in the passed directory. *)
 
 val generate_html : string -> unit

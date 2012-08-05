@@ -291,7 +291,7 @@ let generate_html path =
       "</html>" ];
   if !Args.search then begin
     let filename = Filename.concat path "argot_index.html" in
-    let title = match !Odoc_args.title with Some x -> x | None -> "Argot search" in
+    let title = match !Odoc_global.title with Some x -> x | None -> "Argot search" in
     Utils.write_lines
       filename
       [ "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Frameset//EN\" \"http://www.w3.org/TR/html4/frameset.dtd\">";

@@ -25,30 +25,29 @@ let search_frame = ref false
 let full_text = ref false
 
 let register () =
-  Odoc_info.Args.add_option
+  Odoc_args.add_option
     ("-define",
      (let var = ref "" in
      Arg.Tuple [Arg.Set_string var;
                 Arg.String (fun s -> Definitions.add definitions !var s)]),
      "<name> <value>\n\t\tDefine a variable to be used by the token tag");
-  Odoc_info.Args.add_option
+  Odoc_args.add_option
     ("-definitions",
      Arg.String (fun s -> Definitions.add_from_file definitions s),
      "<file>\n\t\tLoad definitions from file");
-  Odoc_info.Args.add_option
+  Odoc_args.add_option
     ("-search",
      Arg.Set search,
      "\n\t\tGenerate search information");
-  Odoc_info.Args.add_option
+  Odoc_args.add_option
     ("-search-frame",
      Arg.Set search_frame,
      "\n\t\tSearch from a frame");
-  Odoc_info.Args.add_option
+  Odoc_args.add_option
     ("-full-text",
      Arg.Set full_text,
      "\n\t\tEnable full-text search");
-  Odoc_info.Args.add_option
+  Odoc_args.add_option
     ("-argot-version",
      Arg.Unit (fun () -> Printf.printf "Argot %s\n" Version.value; exit 0),
      "\n\t\tPrint version and exit\n")
-
