@@ -214,28 +214,28 @@ let generate_data path self =
       { get_name = (fun x -> x.Class.cl_name);
         get_kind = (fun _ -> "class");
         get_type = (fun _ -> ellipsis "class");
-        get_ref = (fun x -> Odoc_html.Naming.file_type_class_complete_target x.Class.cl_name);
+        get_ref = (fun x -> fst (Odoc_html.Naming.html_files x.Class.cl_name));
         get_doc = (fun x -> x.Class.cl_info); };
     iter
       self#list_class_types
       { get_name = (fun x -> x.Class.clt_name);
         get_kind = (fun _ -> "class type");
         get_type = (fun _ -> ellipsis "class type");
-        get_ref = (fun x -> Odoc_html.Naming.file_type_class_complete_target x.Class.clt_name);
+        get_ref = (fun x -> fst (Odoc_html.Naming.html_files x.Class.clt_name));
         get_doc = (fun x -> x.Class.clt_info); };
     iter
       self#list_modules
       { get_name = (fun x -> x.Module.m_name);
         get_kind = (fun _ -> "module");
         get_type = (fun _ -> ellipsis "module");
-        get_ref = (fun x -> Odoc_html.Naming.complete_target "" x.Module.m_name);
+        get_ref = (fun x -> fst (Odoc_html.Naming.html_files x.Module.m_name));
         get_doc = (fun x -> x.Module.m_info); };
     iter
       self#list_module_types
       { get_name = (fun x -> x.Module.mt_name);
         get_kind = (fun _ -> "module type");
         get_type = (fun _ -> ellipsis "module type");
-        get_ref = (fun x -> Odoc_html.Naming.complete_target "" x.Module.mt_name);
+        get_ref = (fun x -> fst (Odoc_html.Naming.html_files x.Module.mt_name));
         get_doc = (fun x -> x.Module.mt_info); };
     close_out_noerr chan
   with e ->
