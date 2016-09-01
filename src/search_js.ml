@@ -1183,10 +1183,14 @@ let types = [
   "        return res;";
   "    }";
   "    case KIND_TYPE_APP: {";
-  "        var n = t[t.length - 1];";
-  "        var m = manifests[n];";
+  "        var res = new Array();";
+  "        for (var i = 0; i < t.length - 1; i++) {";
+  "            res[i] = rewrite_manifests_aux(t[i], subst);";
+  "        }";
+  "        res.kind = kind(t);";
+  "        var m = manifests[t[t.length - 1]];";
   "        if (m == undefined) {";
-  "            return t;";
+  "            res[t.length - 1] = t[t.length - 1];";
   "        } else {";
   "            var new_subst = new Object();";
   "            for (var attr in subst) {";
@@ -1200,9 +1204,9 @@ let types = [
   "            } else {";
   "                new_subst[m.type_decl[0]] = t[0];";
   "            }";
-  "            return rewrite_manifests_aux(m.type_manifest, new_subst);";
-  "";
+  "            res[t.length - 1] = rewrite_manifests_aux(m.type_manifest, new_subst);";
   "        }";
+  "        return res;";
   "    }";
   "    case KIND_VAR: {";
   "        var u = subst[t];";
@@ -1236,4 +1240,3 @@ let generate_files path =
   Utils.write_lines (filename "argot_parser.js") parser;
   Utils.write_lines (filename "argot_search.js") search;
   Utils.write_lines (filename "argot_types.js") types;
-
