@@ -76,6 +76,8 @@ module Types = struct
   let get m t = List.partition (Set.mem t) m
 
   let union m t1 t2 =
+    let strip = strip_hidden_modules in
+    let t1 = strip t1 and t2 = strip t2 in
     match get m t1, get m t2 with
     | ([],_),([],_) -> Set.of_list [t1; t2] :: m
     | ([s],m),([],_) -> Set.add t2 s :: m
