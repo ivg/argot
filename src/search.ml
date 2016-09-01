@@ -52,6 +52,23 @@ module StringSet = Set.Make (String)
 let word_boundary = Str.regexp "\\b"
 let is_word = Str.regexp "[a-zA-Z0-9]+"
 
+let strip_module_name name module_name =
+  let m = String.length module_name in
+  let rec loop name i =
+    let n = String.length name in
+    match String.sub name i m = module_name with
+    | false -> loop name (i+1)
+    | exception _ -> name
+    | true ->
+      if n > i+m && name.[i+m] = '.' then
+        let lhs = String.sub name 0 i in
+        let rhs = String.sub name (i+m+1) (n-m-i-1) in
+        loop (lhs^rhs) (i+1)
+      else loop name (i+1) in
+  loop name 0
+
+let strip_hidden_modules name =
+  List.fold_left strip_module_name name !Odoc_global.hidden_modules
 let generate_data path self =
   let args_full_text = !Args.full_text in
   let open Odoc_info in
@@ -85,15 +102,18 @@ let generate_data path self =
     Printf.fprintf
       chan
       "add_ocaml_element(%S, %S, %S, %S, %S, %S, %s);\n"
-      short_name
-      full_name
+      (strip_hidden_modules short_name)
+      (strip_hidden_modules full_name)
       kind
-      typ
+      (strip_hidden_modules typ)
       ref
       doc
       words in
   let add_manifest n f t =
-    Printf.fprintf chan "add_manifest(%S, %S, %S);\n" n f t in
+    Printf.fprintf chan "add_manifest(%S, %S, %S);\n"
+      (strip_hidden_modules n)
+      (strip_hidden_modules f)
+      (strip_hidden_modules t) in
   let iter l access =
     List.iter
       (fun x ->
