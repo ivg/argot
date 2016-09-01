@@ -52,6 +52,7 @@ module StringSet = Set.Make (String)
 let word_boundary = Str.regexp "\\b"
 let is_word = Str.regexp "[a-zA-Z0-9]+"
 
+
 let strip_module_name name module_name =
   let m = String.length module_name in
   let rec loop name i =
@@ -69,6 +70,24 @@ let strip_module_name name module_name =
 
 let strip_hidden_modules name =
   List.fold_left strip_module_name name !Odoc_global.hidden_modules
+
+module Types = struct
+  module Set = StringSet
+  let get m t = List.partition (Set.mem t) m
+
+  let union m t1 t2 =
+    match get m t1, get m t2 with
+    | ([],_),([],_) -> Set.of_list [t1; t2] :: m
+    | ([s],m),([],_) -> Set.add t2 s :: m
+    | ([],_),([s],m) -> Set.add t1 s :: m
+    | ([s1],modulo_s1),([s2],_) ->
+      if Set.equal s1 s2 then m
+      else Set.union s1 s2 ::
+           List.filter (fun s -> not(Set.equal s s2)) modulo_s1
+    | _ -> assert false
+
+end
+
 let generate_data path self =
   let args_full_text = !Args.full_text in
   let open Odoc_info in
@@ -142,6 +161,9 @@ let generate_data path self =
     List.iter
       (fun n -> add_ocaml_element n n "constructor" "option" "" None "built-in")
       predefined_constructors;
+    let type_equalities = ref [] in
+    let union t1 t2 =
+      type_equalities := Types.union !type_equalities t1 t2 in
     List.iter (* output type manifests first *)
       (fun x ->
         let type_params =
@@ -158,8 +180,10 @@ let generate_data path self =
         | Type.Type_abstract ->
             (match x.Type.ty_manifest with
               | Some (Type.Other te) ->
-                add_manifest x.Type.ty_name type_expr (string_of_type_expr te)
-            | _ -> ())
+                let te = string_of_type_expr te in
+                union type_expr te;
+                union x.Type.ty_name te
+              | _ -> ())
         | Type.Type_variant _ | Type.Type_open -> ()
         | Type.Type_record l ->
             let types =
@@ -168,8 +192,13 @@ let generate_data path self =
                   "(" ^ (string_of_type_expr x.Type.rf_type) ^ ")")
                 l in
             let types = String.concat " * " types in
-            add_manifest x.Type.ty_name type_expr types)
+            union x.Type.ty_name type_expr;
+            union type_expr types)
       self#list_types;
+    List.iter (fun cls ->
+        let repr = StringSet.max_elt cls in
+        StringSet.iter (fun t ->
+            if t <> repr then add_manifest t t repr) cls) !type_equalities;
     iter
       self#list_values
       { get_name = (fun x -> x.Value.val_name);
@@ -282,7 +311,7 @@ let generate_html path =
       "      <input type=\"text\" name=\"query\" value=\"\" size=\"42\"/>";
       "      <input type=\"submit\" value=\"search\"/>";
       "      <br/>";
-      "      <input type=\"radio\" name=\"mode\" value=\"name\" checked=\"checked\"/>&nbsp;by name<br/>"; 
+      "      <input type=\"radio\" name=\"mode\" value=\"name\" checked=\"checked\"/>&nbsp;by name<br/>";
       "      <input type=\"radio\" name=\"mode\" value=\"regexp\"/>&nbsp;by regexp<br/>";
       "      <input type=\"radio\" name=\"mode\" value=\"type\"/>&nbsp;by type&nbsp;&nbsp;&nbsp;";
       "      <input type=\"radio\" name=\"mode\" value=\"typewithmanifest\"/>&nbsp;by type, using manifest<br/>";
