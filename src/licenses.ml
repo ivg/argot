@@ -62,5 +62,5 @@ let to_html name =
   let enclose addr =
     Printf.sprintf "<a href=\"%s\" target=\"_blank\">%s</a>" addr name in
   try
-    enclose (Hashtbl.find table (String.lowercase name))
+    enclose (Hashtbl.find table (String.lowercase_ascii name))
   with Not_found -> name

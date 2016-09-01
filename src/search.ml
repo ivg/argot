@@ -24,21 +24,6 @@ type 'a element_access = {
     get_doc : 'a -> Odoc_info.info option;
   }
 
-let empty_info =
-  { Odoc_types.i_desc = None;
-    Odoc_types.i_authors = [];
-    Odoc_types.i_version = None;
-    Odoc_types.i_sees = [];
-    Odoc_types.i_since = None;
-    Odoc_types.i_before = [];
-    Odoc_types.i_deprecated = None;
-    Odoc_types.i_params = [];
-    Odoc_types.i_raised_exceptions = [];
-    Odoc_types.i_return_value = None;
-    Odoc_types.i_custom = []; }
-
-let make_info desc =
-  Some { empty_info with Odoc_types.i_desc = desc }
 
 let predefined_types =
   ["int"; "char"; "string"; "float"; "bool"; "unit"; "exn";
@@ -88,7 +73,7 @@ let generate_data path self =
             List.fold_left
               (fun acc elem ->
                 if (String.length elem > 2) && (Str.string_match is_word elem 0) then
-                  StringSet.add ("\"" ^ (String.uppercase elem) ^ "\"") acc
+                  StringSet.add ("\"" ^ (String.uppercase_ascii elem) ^ "\"") acc
                 else
                   acc)
               StringSet.empty
@@ -124,6 +109,9 @@ let generate_data path self =
       l in
   let string_of_type_expr_list l =
     String.concat " * " (List.map string_of_type_expr l) in
+  let string_of_variant_constructor = function
+    | Type.Cstr_tuple args -> string_of_type_expr_list args
+    | Type.Cstr_record _ -> "< record_type >" in
   try
     List.iter
       (fun t -> add_ocaml_element t t "type" t "" None "built-in")
@@ -149,10 +137,10 @@ let generate_data path self =
         match x.Type.ty_kind with
         | Type.Type_abstract ->
             (match x.Type.ty_manifest with
-            | Some te ->
+              | Some (Type.Other te) ->
                 add_manifest x.Type.ty_name type_expr (string_of_type_expr te)
-            | None -> ())
-        | Type.Type_variant _ -> ()
+            | _ -> ())
+        | Type.Type_variant _ | Type.Type_open -> ()
         | Type.Type_record l ->
             let types =
               List.map
@@ -173,7 +161,7 @@ let generate_data path self =
       self#list_exceptions
       { get_name = (fun x -> x.Exception.ex_name);
         get_kind = (fun _ -> "exception");
-        get_type = (fun x -> string_of_type_expr_list x.Exception.ex_args);
+        get_type = (fun x -> string_of_variant_constructor x.Exception.ex_args);
         get_ref = (fun x -> Odoc_html.Naming.complete_exception_target x);
         get_doc = (fun x -> x.Exception.ex_info); };
     iter
@@ -187,13 +175,13 @@ let generate_data path self =
       (fun x ->
         let ref = Odoc_html.Naming.complete_type_target x in
         match x.Type.ty_kind with
-        | Type.Type_abstract -> ()
+        | Type.Type_abstract | Type.Type_open -> ()
         | Type.Type_variant l ->
             List.iter
               (fun x ->
                 let name = x.Type.vc_name in
-                let typ = string_of_type_expr_list x.Type.vc_args in
-                let full_text = make_info x.Type.vc_text in
+                let typ = string_of_variant_constructor x.Type.vc_args in
+                let full_text = x.Type.vc_text in
                 let doc = first_setence full_text in
                 add_ocaml_element name name "constructor" typ ref full_text doc)
               l
@@ -202,7 +190,7 @@ let generate_data path self =
               (fun x ->
                 let name = x.Type.rf_name in
                 let typ = string_of_type_expr x.Type.rf_type in
-                let full_text = make_info x.Type.rf_text in
+                let full_text = x.Type.rf_text in
                 let doc = first_setence full_text in
                 add_ocaml_element name name "field" typ ref full_text doc)
               l)
