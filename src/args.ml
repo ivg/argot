@@ -24,6 +24,8 @@ let search_frame = ref false
 
 let full_text = ref false
 
+let hide_undocumented = ref false
+
 let register () =
   Odoc_args.add_option
     ("-define",
@@ -47,6 +49,10 @@ let register () =
     ("-full-text",
      Arg.Set full_text,
      "\n\t\tEnable full-text search");
+  Odoc_args.add_option
+    ("-hide-undocumented-values",
+     Arg.Set hide_undocumented,
+     "\n\t\tHide undocumented values");
   Odoc_args.add_option
     ("-argot-version",
      Arg.Unit (fun () -> Printf.printf "Argot %s\n" Version.value; exit 0),

@@ -30,5 +30,8 @@ val search_frame : bool ref
 val full_text : bool ref
 (** Whether full-text search is enabled. *)
 
+val hide_undocumented : bool ref
+(** Whether we should ignore undocumented values.  *)
+
 val register : unit -> unit
 (** Registers the various command-line switches. *)

@@ -183,6 +183,10 @@ class html = object (self)
     if !Args.search && not !Args.search_frame then
       Buffer.add_string b Search.link
 
+  method! html_of_value b = function
+    | {Odoc_info.Value.val_info=None; _} when Args.hide_undocumented.contents -> ()
+    | v -> super#html_of_value b v
+
   method! generate module_list =
     super#generate module_list;
     if !Args.search then
