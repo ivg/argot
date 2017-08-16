@@ -42,18 +42,12 @@ do
         shift
 done
 
-# make options
-make_quiet=`make -f - <<EOF
-default: gnumake
-	@if [ "$^" != "" ]; then echo '--no-print-directory'; fi
-gnumake:
-EOF`
 
 # file creation
 echo "# timestamp: `date`" > Makefile.config
 echo "PATH_OCAML_PREFIX=$ocaml_prefix" >> Makefile.config
 echo "PATH_OCAMLFIND=$ocamlfind" >> Makefile.config
 echo "NATIVE_DYNLINK=$native_dynlink" >> Makefile.config
-echo "MAKE_QUIET=$make_quiet" >> Makefile.config
+echo "MAKE_QUIET=" >> Makefile.config
 echo "" >> Makefile.config
 echo 'Makefile.config successfully created'
